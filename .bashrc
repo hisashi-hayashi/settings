@@ -6,19 +6,34 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # User specific aliases and functions
-alias vi="vim"
-alias grep="grep --color=auto"
-alias ll="ls -al"
+# linux用
+alias vi="/usr/bin/vim"
+alias grep="grep -n --color=auto"
+alias ll='ls -al'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias ex="exit"
+alias reload='. ~/.bashrc'
+
+# git
+alias gt="git"
+alias gp="git pull --prune"
+
+# rails
 alias be="bundle exec"
 alias bi="bundle install"
-alias rs="bundle exec rake spec SPEC_OPTS=\"-c -fd -fh -o spec/spec_report.html\" RAILS_ENV=test"
-alias gt="git"
-alias sv="bundle exec rails s"
-alias gp="git pull"
-alias ex="exit"
-alias rspec="bundle exec rspec -c -fd"
+alias rspec='NO_RCOV=true bundle exec rspec'
+alias rs='bin/parallel_rspec spec/'
+alias rc='bundle exec rubocop $( git diff --name-only --diff-filter=AMRC | paste -s - )  --cache false'
+alias rc_all='bundle exec rubocop --cache false'
+alias sv='bin/rails s -b 0.0.0.0'
 
-# Console settings
+# prj
+alias it='./script/test/exec_remote_integration_test.rb -S'
+alias seed_all='bundle exec rake parallel:seed_all'
+
+# console setting
 if [ -f ~/.git-completion.bash ]; then
     source ~/.git-completion.bash
 fi

@@ -3,24 +3,34 @@ set shiftwidth=2
 set expandtab
 set nocompatible
 set number
-syntax on
-filetype on
-filetype indent on
-filetype plugin on
+set hlsearch
+set wildmenu
+set wildmode=longest:full,full
 
-au FileType ruby setlocal makeprg=ruby\ -c\ %
-au FileType ruby setlocal errorformat=%m\ in\ %f\ on\ line\ %l
-
-" neocomplcache
-set nocompatible " be iMproved
 filetype off
+if has('vim_starting')
+  set nocompatible               " Be iMproved
 
-set runtimepath+=~/.vim/bundle/neobundle.vim/
+  set runtimepath+=~/.vim/bundle/neobundle.vim
+endif
+
+" Required:
 call neobundle#begin(expand('~/.vim/bundle/'))
 
-" originalrepos on github
+""""""""""""""""""""""""""""""
+" Let NeoBundle manage NeoBundle
+" Required:
 NeoBundleFetch 'Shougo/neobundle.vim'
-NeoBundleFetch 'Shougo/vimproc'
+
+NeoBundle 'Shougo/vimproc', {
+      \ 'build' : {
+      \     'windows' : 'make -f make_mingw32.mak',
+      \     'cygwin' : 'make -f make_cygwin.mak',
+      \     'mac' : 'make -f make_mac.mak',
+      \     'unix' : 'make -f make_unix.mak',
+      \    },
+      \ }
+
 NeoBundle 'VimClojure'
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
@@ -30,6 +40,13 @@ NeoBundle 'The-NERD-Commenter'
 NeoBundle 'rails.vim'
 NeoBundle 'The-NERD-tree'
 NeoBundle 'scrooloose/syntastic.git'
+NeoBundle 'soramugi/auto-ctags.vim'
+NeoBundle 'vim-autoclose'
+NeoBundle 'tpope/vim-endwise'
+NeoBundle 'vim-markdown'
+NeoBundle 'switch.vim'
+NeoBundle 'vim-ruby/vim-ruby'
+NeoBundle 'rking/ag.vim'
 
 call neobundle#end()
 
@@ -44,12 +61,6 @@ nmap bb obinding.pry<Esc>
 " F4/F5: コピペモード/戻す
 map <F4>  :set paste <CR>:set nonu <CR>
 map <F5>  :set nopaste <CR>:set nu <CR>
-
-" Ctrl + a: 対応するスペックファイルとの切り替え
-map <C-a> :A <CR>
-
-" Ctrl + q: バッファから元のファイルへ戻る
-map <C-q> :bn <CR>
 
 " Ctrl + キー: ペイン移動
 nnoremap <C-j> <C-w>j
@@ -89,3 +100,43 @@ nnoremap q b
 
 " 保存時に行末の空白を除去する
 autocmd BufWritePre * :%s/\s\+$//ge
+
+" ファイルを開いた時、あるいはバッファを切替えた時に、最後にカーソルがあった場所にカーソルを移動
+augroup vimrcEx
+  au BufRead * if line("'\"") > 0 && line("'\"") <= line("$") |
+  \ exe "normal g`\"" | endif
+augroup END
+
+let g:auto_ctags = 1
+let g:auto_ctags_directory_list = ['tmp', '.git']
+let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
+" tagsジャンプの時に複数ある時は一覧表示
+nnoremap <C-]> g<C-]>
+
+nnoremap <silent><C-e> :NERDTreeToggle<CR>
+let g:NERDTreeHighlightCursorline=1
+
+set backspace=indent,eol,start
+
+let g:vim_markdown_folding_disabled = 1
+" switch {{{
+nmap + :Switch<CR>
+nmap - :Switch<CR>
+" " }}}
+
+"vimgrep後自動でquickfix-windowを開く
+autocmd QuickFixCmdPost *grep* cwindow
+
+au BufRead,BufNewFile *.md set filetype=markdown
+
+" 対応するエンドにジャンプ
+source $VIMRUNTIME/macros/matchit.vim
+
+set re=0
+filetype on
+filetype indent on
+filetype plugin on
+
+au FileType ruby setlocal makeprg=ruby\ -c\ %
+au FileType ruby setlocal errorformat=%m\ in\ %f\ on\ line\ %l
+syntax on
