@@ -1,14 +1,11 @@
 [user]
-  name  = "hisashi"
-  email = "sh09dhsashi@gmail.com"
+  name = ""
+  email = example@example.co.jp
 [core]
   autocrlf     = false
   safecrlf     = false
-  excludesfile = /home/hayashi/.gitignore
+  excludesfile = /root/.gitignore
   editor       = vim -c \"set fenc=utf-8\"
-[github]
-  user  = "hisashi-hayashi"
-  token = "TODO: please specify token"
 [color]
   ui          = true
   diff        = auto
@@ -27,3 +24,9 @@
 [merge]
   ff   = false
   tool = vimdiff3
+[pull]
+  rebase = true
+[init]
+  templatedir = /root/.git_template
+[url "https://"]
+	insteadOf = git://
