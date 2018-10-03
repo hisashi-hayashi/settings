@@ -9,3 +9,4 @@ coverage/
 tags
 tags.lock
 .bundle
+.DS_Store

@@ -7,6 +7,7 @@ set hlsearch
 set wildmenu
 set wildmode=longest:full,full
 set encoding=utf-8
+
 filetype off
 set re=0
 
@@ -99,7 +100,8 @@ call dein#add('vim-ruby/vim-ruby')
 call dein#add('rking/ag.vim')
 call dein#add('Townk/vim-autoclose')
 call dein#add('AndrewRadev/switch.vim')
-call dein#add('rking/ag.vim')
+call dein#add('taiansu/nerdtree-ag')
+call dein#add('ctrlpvim/ctrlp.vim')
 " call dein#add('vim-markdown')
 " call dein#add('VimClojure')
 
@@ -132,7 +134,7 @@ if has('path_extra')
 endif
 let g:auto_ctags = 1
 let g:auto_ctags_directory_list = ['tmp']
-let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
+" let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
 
 " tagsジャンプの時に複数ある時は一覧表示
 nnoremap <C-]> g<C-]>
@@ -200,9 +202,9 @@ endif
 let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
 " C-nでneocomplete補完
-inoremap <expr><C-n>  pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
+" inoremap <expr><C-n>  pumvisible() ? "\<C-n>" : "\<C-x>\<C-u>\<C-p>"
 " C-pでkeyword補完
-inoremap <expr><C-p>  pumvisible() ? "\<C-p>" : "\<C-p>\<C-n>"
+" inoremap <expr><C-p>  pumvisible() ? "\<C-p>" : "\<C-p>\<C-n>"
 function! s:my_cr_function()
   return pumvisible() ? "\<C-y>" : "\<CR>"
 endfunction
@@ -267,6 +269,23 @@ let g:neocomplete#include_suffixes = {
 "最近使ったファイル一覧
 noremap <C-f> :Unite file_mru<CR>
 """""""""""""""Unite end"""""""""""""""
+
+" ctrlp
+if executable('ag')
+  let g:ctrlp_use_caching = 0
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup -g ""'
+
+  " 本語のファイルを除外
+  let g:ctrlp_use_migemo = 0
+
+  " 曖昧検索をオフ
+  let g:ctrlp_regexp = 1
+
+  " # 検索してほしくないファイルやディレクトリを除外
+  let g:ctrlp_custom_ignore = {
+    \ 'dir': '\v[\/]\.(git|hg|svn)$',
+  \ }
+endif
 
 filetype on
 filetype indent on

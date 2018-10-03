@@ -1,10 +1,10 @@
 [user]
   name = ""
-  email = example@example.co.jp
+  email = ""
 [core]
   autocrlf     = false
   safecrlf     = false
-  excludesfile = /root/.gitignore
+  excludesfile = ~/.gitignore
   editor       = vim -c \"set fenc=utf-8\"
 [color]
   ui          = true
