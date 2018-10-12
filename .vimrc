@@ -93,7 +93,6 @@ call dein#add('ujihisa/neco-look')
 call dein#add('scrooloose/nerdcommenter')
 call dein#add('scrooloose/syntastic.git')
 call dein#add('scrooloose/nerdtree')
-call dein#add('soramugi/auto-ctags.vim')
 call dein#add('tpope/vim-endwise')
 call dein#add('tpope/vim-rails')
 call dein#add('vim-ruby/vim-ruby')
@@ -129,12 +128,29 @@ map <Leader>u :<C-u>diffupdate<CR>
 """""""""""""""The-NERD-Commenter end"""""""""""""""
 
 """""""""""""""ctagsの設定 start"""""""""""""""
-if has('path_extra')
-  set tags+=./tmp/tags;
-endif
-let g:auto_ctags = 1
-let g:auto_ctags_directory_list = ['tmp']
-" let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
+set tags=.tags;$HOME
+
+function! s:execute_ctags() abort
+  " 探すタグファイル名
+  let tag_name = '.tags'
+  " ディレクトリを遡り、タグファイルを探し、パス取得
+  let tags_path = findfile(tag_name, '.;')
+  " タグファイルパスが見つからなかった場合
+  if tags_path ==# ''
+    return
+  endif
+
+  " タグファイルのディレクトリパスを取得
+  " `:p:h`の部分は、:h filename-modifiersで確認
+  let tags_dirpath = fnamemodify(tags_path, ':p:h')
+  " 見つかったタグファイルのディレクトリに移動して、ctagsをバックグラウンド実行（エラー出力破棄）
+  execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
+endfunction
+
+augroup ctags
+  autocmd!
+  autocmd BufWritePost * call s:execute_ctags()
+augroup END
 
 " tagsジャンプの時に複数ある時は一覧表示
 nnoremap <C-]> g<C-]>
